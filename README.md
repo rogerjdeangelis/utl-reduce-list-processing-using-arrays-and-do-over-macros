@@ -13,8 +13,17 @@ Reduce list processing using arrays and do over macros
        if myvariable in ('A10' , 'A11' , 'A12' , 'A13' , 'A14' ) then myvariable = 0;                              
        else if myvariable in ('A16' , 'A17' , 'A18' , 'A19' , 'A20' ) then myvariable = 1;                         
                                                                                                                    
-    run;                                                                                                           
-                                                                                                                   
+    run;   
+    
+    See additional recent solution on end                                                  
+    using Bart's macros.                                                                   
+                                                                                           
+    Bart's macros are more flexible because they support datastep code/functions           
+    at macro execution time. Give them a try!!                                             
+                                                                                           
+    Bartosz Jablonski                                                                      
+    yabwon@gmail.com                                                                       
+                                                                                                               
     github                                                                                                         
     https://tinyurl.com/yxldswy6                                                                                   
     https://github.com/rogerjdeangelis/utl-reduce-list-processing-using-arrays-and-do-over-macros                  
@@ -118,5 +127,56 @@ Reduce list processing using arrays and do over macros
         else if var in ( %do_over(lstb,phrase="?",between=comma) ) then bin = 1;                                   
                                                                                                                    
     run;quit;                                                                                                      
-                                                                                                                   
+                                                              
+                                                                                             
+    *____             _                                                                      
+    | __ )  __ _ _ __| |_                                                                    
+    |  _ \ / _` | '__| __|                                                                   
+    | |_) | (_| | |  | |_                                                                    
+    |____/ \__,_|_|   \__|                                                                   
+                                                                                             
+    ;                                                                                        
+    filename t1 url 'http://www.mini.pw.edu.pl/~bjablons/SASpublic/array.sas';               
+    %include t1 ;                                                                            
+    filename t1 clear;                                                                       
+                                                                                             
+    filename t1 url 'http://www.mini.pw.edu.pl/~bjablons/SASpublic/do_over.sas';             
+    %include t1 ;                                                                            
+    filename t1 clear;                                                                       
+                                                                                             
+    filename t1 url 'http://www.mini.pw.edu.pl/~bjablons/SASpublic/deletemacarray.sas';      
+    %include t1 ;                                                                            
+    filename t1 clear;                                                                       
+                                                                                             
+    data have;                                                                               
+     do idx=7 to 23;                                                                         
+       var="A"!!put(idx,z2.);                                                                
+       output;                                                                               
+     end;                                                                                    
+     drop idx;                                                                               
+    run;quit;                                                                                
+                                                                                             
+                                                                                             
+    %array(lsta[*] A10-A14, vnames=Y, macarray=Y);                                           
+    %array(lstb[*] A16-A20, vnames=Y, macarray=Y);                                           
+                                                                                             
+    options mprint;                                                                          
+    data want;                                                                               
+                                                                                             
+      set have;                                                                              
+                                                                                             
+        if var in      ( "%do_over(lsta,between=" ")" ) then bin = 0;                        
+        else if var in ( "%do_over(lstb,between=" ")" ) then bin = 1;                        
+                                                                                             
+    run;quit;                                                                                
+    options nomprint;                                                                        
+                                                                                             
+    %deletemacarray(lsta)                                                                    
+    %deletemacarray(lstb)                                                                    
+                                                                                             
+                                                                                             
+
+                    
+                    
+                    
                                                                                                                    
